@@ -13,10 +13,24 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
     const { addToCart } = useCart();
+    const [quantity, setQuantity] = React.useState(1);
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault(); // Prevent navigating if wrapped in Link
-        addToCart(product);
+        addToCart(product, quantity);
+        setQuantity(1); // Reset quantity after adding
+    };
+
+    const increment = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setQuantity(q => q + 1);
+    };
+
+    const decrement = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (quantity > 1) {
+            setQuantity(q => q - 1);
+        }
     };
 
     return (
@@ -39,20 +53,43 @@ export function ProductCard({ product }: ProductCardProps) {
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
                     {product.description}
                 </p>
-                <div className="mt-4 flex flex-1 items-end justify-between">
-                    <div className="flex flex-col">
-                        {product.originalPrice && (
-                            <span className="text-xs text-slate-400 line-through">${product.originalPrice.toFixed(2)}</span>
-                        )}
-                        <span className="text-lg font-bold text-[#137fec]">${product.price.toFixed(2)}</span>
+                <div className="mt-4 flex flex-col gap-3">
+                    <div className="flex items-end justify-between">
+                        <div className="flex flex-col">
+                            {product.originalPrice && (
+                                <span className="text-xs text-slate-400 line-through">${product.originalPrice.toFixed(2)}</span>
+                            )}
+                            <span className="text-lg font-bold text-[#137fec]">${product.price.toFixed(2)}</span>
+                        </div>
                     </div>
-                    <Button
-                        size="icon"
-                        className="relative z-10 shrink-0 bg-[#137fec] hover:bg-[#137fec]/90 text-white rounded-md size-9"
-                        onClick={handleAddToCart}
-                    >
-                        <AddToCartIcon className="size-5" />
-                    </Button>
+
+                    <div className="flex items-center gap-2 relative z-10">
+                        <div className="flex items-center rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+                            <button
+                                onClick={decrement}
+                                className="px-2 py-1 text-slate-600 dark:text-slate-400 hover:text-[#137fec] disabled:opacity-50"
+                                disabled={quantity <= 1}
+                            >
+                                -
+                            </button>
+                            <span className="px-2 text-sm font-medium text-slate-900 dark:text-white min-w-[1.5rem] text-center">
+                                {quantity}
+                            </span>
+                            <button
+                                onClick={increment}
+                                className="px-2 py-1 text-slate-600 dark:text-slate-400 hover:text-[#137fec]"
+                            >
+                                +
+                            </button>
+                        </div>
+                        <Button
+                            className="flex-1 bg-[#137fec] hover:bg-[#137fec]/90 text-white gap-2"
+                            onClick={handleAddToCart}
+                        >
+                            <AddToCartIcon className="size-4" />
+                            Add
+                        </Button>
+                    </div>
                 </div>
             </div>
         </Card>
