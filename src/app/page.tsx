@@ -1,33 +1,13 @@
-
 "use client";
 
 import * as React from "react";
 import Link from "next/link";
-import {
-    ShoppingBag,
-    Search,
-    Menu,
-    ArrowRight,
-    ShoppingCart as AddToCartIcon,
-    ChevronDown
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-
-// Product Data Type
-interface Product {
-    id: number;
-    title: string;
-    description: string;
-    price: number;
-    originalPrice?: number;
-    image: string;
-    tag?: {
-        label: string;
-        color: string;
-    };
-}
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { ProductCard } from "@/components/ProductCard";
+import { Product } from "@/context/CartContext";
 
 // Product Data
 const products: Product[] = [
@@ -96,47 +76,7 @@ export default function Home() {
     return (
         <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-[#f6f7f8] dark:bg-[#0f172a] text-slate-900 dark:text-white font-sans selection:bg-[#137fec] selection:text-white">
             {/* Top Navigation Bar */}
-            <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-[#0f172a]/80 backdrop-blur-md">
-                <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-                    {/* Logo */}
-                    <div className="flex items-center gap-2">
-                        <div className="flex size-8 items-center justify-center rounded bg-[#137fec] text-white">
-                            <ShoppingBag className="size-5" />
-                        </div>
-                        <span className="text-lg font-bold tracking-tight">ShopFlow</span>
-                    </div>
-
-                    {/* Search Bar (Hidden on mobile, visible on md+) */}
-                    <div className="hidden md:flex max-w-md flex-1 items-center px-8">
-                        <div className="relative w-full">
-                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <Search className="size-5 text-slate-400" />
-                            </div>
-                            <Input
-                                placeholder="Search products..."
-                                className="pl-10 pr-3 bg-slate-50 dark:bg-slate-900 ring-offset-0 focus-visible:ring-[#137fec] focus-visible:border-[#137fec]"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Navigation & Actions */}
-                    <div className="flex items-center gap-4">
-                        <nav className="hidden lg:flex gap-6 mr-4">
-                            <Link href="#" className="text-sm font-medium hover:text-[#137fec] transition-colors">Home</Link>
-                            <Link href="#" className="text-sm font-medium hover:text-[#137fec] transition-colors">Shop</Link>
-                            <Link href="#" className="text-sm font-medium hover:text-[#137fec] transition-colors">Deals</Link>
-                        </nav>
-                        <div className="flex items-center gap-3">
-                            <Button variant="ghost" className="hidden sm:flex text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800" asChild>
-                                <Link href="/login">Login</Link>
-                            </Button>
-                            <Button className="bg-[#137fec] hover:bg-[#137fec]/90 text-white" asChild>
-                                <Link href="/register">Register</Link>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <Header />
 
             {/* Main Content */}
             <main className="flex-1">
@@ -200,38 +140,7 @@ export default function Home() {
                     {/* Product Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {products.map((product) => (
-                            <Card key={product.id} className="p-0 gap-0 overflow-hidden group border-slate-200 dark:border-slate-800 bg-white dark:bg-[#1e293b] shadow-sm hover:shadow-md transition-all hover:border-[#137fec]/50 dark:hover:border-[#137fec]/50">
-                                <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-200 dark:bg-slate-800">
-                                    <div
-                                        className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
-                                        style={{ backgroundImage: `url('${product.image}')` }}
-                                    />
-                                    {product.tag && (
-                                        <div className={`absolute top-2 right-2 rounded ${product.tag.color} px-2 py-1 text-xs font-bold text-white shadow-sm`}>
-                                            {product.tag.label}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="flex flex-1 flex-col p-4">
-                                    <h3 className="text-base font-semibold text-slate-900 dark:text-white">
-                                        <Link href="#"><span className="absolute inset-0"></span>{product.title}</Link>
-                                    </h3>
-                                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
-                                        {product.description}
-                                    </p>
-                                    <div className="mt-4 flex flex-1 items-end justify-between">
-                                        <div className="flex flex-col">
-                                            {product.originalPrice && (
-                                                <span className="text-xs text-slate-400 line-through">${product.originalPrice.toFixed(2)}</span>
-                                            )}
-                                            <span className="text-lg font-bold text-[#137fec]">${product.price.toFixed(2)}</span>
-                                        </div>
-                                        <Button size="icon" className="relative z-10 shrink-0 bg-[#137fec] hover:bg-[#137fec]/90 text-white rounded-md size-9">
-                                            <AddToCartIcon className="size-5" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            </Card>
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
 
@@ -246,54 +155,7 @@ export default function Home() {
             </main>
 
             {/* Footer */}
-            <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f172a] py-12">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-                        <div>
-                            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Products</h3>
-                            <ul role="list" className="mt-4 space-y-4">
-                                <li><Link href="#" className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#137fec] transition-colors">New Arrivals</Link></li>
-                                <li><Link href="#" className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#137fec] transition-colors">Best Sellers</Link></li>
-                                <li><Link href="#" className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#137fec] transition-colors">Sale</Link></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Support</h3>
-                            <ul role="list" className="mt-4 space-y-4">
-                                <li><Link href="#" className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#137fec] transition-colors">Help Center</Link></li>
-                                <li><Link href="#" className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#137fec] transition-colors">Returns</Link></li>
-                                <li><Link href="#" className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#137fec] transition-colors">Contact Us</Link></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Company</h3>
-                            <ul role="list" className="mt-4 space-y-4">
-                                <li><Link href="#" className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#137fec] transition-colors">About Us</Link></li>
-                                <li><Link href="#" className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#137fec] transition-colors">Careers</Link></li>
-                                <li><Link href="#" className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#137fec] transition-colors">Privacy</Link></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Newsletter</h3>
-                            <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">Subscribe for the latest deals.</p>
-                            <form className="mt-4 flex gap-2" onSubmit={(e) => e.preventDefault()}>
-                                <Input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    required
-                                    className="bg-slate-100 dark:bg-slate-800 border-0 focus-visible:ring-[#137fec] focus-visible:border-[#137fec]"
-                                />
-                                <Button type="submit" className="bg-[#137fec] hover:bg-[#137fec]/90 text-white font-semibold">
-                                    Subscribe
-                                </Button>
-                            </form>
-                        </div>
-                    </div>
-                    <div className="mt-12 border-t border-slate-200 dark:border-slate-800 pt-8">
-                        <p className="text-xs text-slate-500 dark:text-slate-400">© 2024 ShopFlow Inc. All rights reserved.</p>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }
